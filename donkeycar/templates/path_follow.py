@@ -277,7 +277,7 @@ def drive(cfg, use_joystick=False, camera_type='single'):
     V.add(plot, inputs=['map/image', 'path'], outputs=['map/image'])
 
     # This will use path and current position to output cross track error
-    cte = CTE()
+    cte = CTE(cfg.LOOK_AHEAD)
     V.add(cte, inputs=['path', 'pos/x', 'pos/y'], outputs=['cte/error'], run_condition='run_pilot')
 
     # This will use the cross track error and PID constants to try to steer back towards the path.

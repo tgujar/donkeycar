@@ -230,11 +230,18 @@ class CTE(object):
     # TODO: update so that we look for nearest two points starting from a given point
     #       and up to a given number of points.  This will speed things up
     #       but more importantly it can be used to handle crossing paths.
+    def __init__(self, ptsCount):
+        self.ptsCount = ptsCount
+        self.last = -1
     def nearest_two_pts(self, path, x, y):
         if path is None or len(path) < 2:
             logging.error("path is none; cannot calculate nearest points")
             return None, None
 
+        if self.last >= 0:
+            roll = self.last + self.ptsCount - min(self.last + self.ptsCount, len(path))
+            path = path[self.last: min(self.last + self.ptsCount, len(path))] + path[0: roll]
+        
         distances = []
         for iP, p in enumerate(path):
             d = dist(p[0], p[1], x, y)
@@ -245,7 +252,8 @@ class CTE(object):
         #iB is the next element in the path, wrapping around..
         iB = (iA + 2) % len(path)
         b = path[iB]
-        
+
+        self.last = iB
         return a, b
 
     def run(self, path, x, y):
